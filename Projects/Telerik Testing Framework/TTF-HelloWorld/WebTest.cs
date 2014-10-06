@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +23,6 @@ namespace TTF_HelloWorld_Web
     /// <summary>
     /// Hello world web tests with Telerik Testing Framework.
     /// Using default [Setup / TearDown] templates that comes with TTF installation.
-    /// Those tests are just to show how you can locate and interact with elements.
     /// </summary>
     [TestClass]
     public class WebTest : BaseTest
@@ -116,7 +115,7 @@ namespace TTF_HelloWorld_Web
             // Place any additional initialization here
             //
 
-       }
+        }
 
         // Use TestCleanup to run code after each test has run
         [TestCleanup()]
@@ -148,122 +147,73 @@ namespace TTF_HelloWorld_Web
 
         #endregion
 
+        /// <summary>
+        /// Search for XAML and verify that result contains 3 cources and 2 tracks
+        /// </summary>
         [TestMethod]
-        public void AJAX_GridCombo_NavigateTo()
+        public void SearchForXaml()
         {
-            // Launch a browser instance
-            Manager.LaunchNewBrowser(BrowserType.InternetExplorer);
+            // Start browser and navigate to Telerik Academy home page
+            Manager.LaunchNewBrowser();
+            ActiveBrowser.NavigateTo("http://telerikacademy.com/");
 
-            // Maximize Browser's window
-            ActiveBrowser.Window.Maximize();
-            
-            // Navigate the active browser GridCombo demo of AJAX controls
-            ActiveBrowser.NavigateTo("http://demos.telerik.com/aspnet-ajax/controls/examples/integration/gridcomboajax/defaultcs.aspx");
-            ActiveBrowser.WaitUntilReady();
+            // Enter "XAML" and click Search button
+            Find.ById<HtmlInputText>("SearchTerm").Text = "XAML";
+            Find.ById<HtmlInputSubmit>("SearchButton").Click();
 
-            // Verify page title
-            Assert.AreEqual("ASP.NET ComboBox Demo - Grid Filtered by Combo", ActiveBrowser.PageTitle);
+            // Locate title
+            var title = Find
+                .ByAttributes<HtmlContainerControl>("class=SearchResultsListTitle");
+
+            // Locate cources list
+            var courcesList = Find
+                .AllByAttributes<HtmlDiv>("class=SearchResultsCategory")
+                .Where(category => category.InnerText.Contains("Курсове"))
+                .FirstOrDefault()
+                .Find.ByExpression<HtmlUnorderedList>(new HtmlFindExpression("tagname=ul"));
+
+            // Locate tracks list
+            var tracksList = Find
+                .AllByAttributes<HtmlDiv>("class=SearchResultsCategory")
+                .Where(category => category.InnerText.Contains("Тракове"))
+                .FirstOrDefault()
+                .Find.ByExpression<HtmlUnorderedList>(new HtmlFindExpression("tagname=ul"));
+
+            // Verify results title
+            Assert.AreEqual("Вашето търсене за \"XAML\" върна следните резултати"
+                , title.TextContent);
+
+            // Verify results
+            Assert.AreEqual(3, courcesList.Items.Count(), "Count of cources is wrong");
+            Assert.AreEqual(2, tracksList.Items.Count(), "Count of tracks is wrong");
         }
 
+        /// <summary>
+        /// Verify user can not login with invalid user and password
+        /// </summary>
         [TestMethod]
-        public void AJAX_GridCombo_LocateElementsDemo()
+        public void InvalidLogin()
         {
-            AJAX_GridCombo_NavigateTo();
+            // Start browser and navigate to Telerik Academy home page
+            Manager.LaunchNewBrowser();
+            ActiveBrowser.NavigateTo("http://telerikacademy.com/");
 
-            // Locate Grid by Id
-            var Grid = ActiveBrowser.Find.ById<HtmlDiv>("ctl00_ContentPlaceHolder1_OrdersGrid");
-            Assert.AreEqual("ctl00_ContentPlaceHolder1_OrdersGrid", Grid.ID);
+            // Find login button and clik it
+            Find.ById<HtmlAnchor>("LoginButton").Click();
 
-            // Locate Grid by Attributes
-            Grid = ActiveBrowser.Find.ByAttributes<HtmlDiv>("class=RadGrid RadGrid_Silk");
-            Assert.AreEqual("ctl00_ContentPlaceHolder1_OrdersGrid", Grid.ID);
+            // Wait for User and Password elements
+            ActiveBrowser.WaitForElement(new HtmlFindExpression("textcontent=Вход в системата"), 30000, false);
 
-            // Locate Grid by XPath
-            Grid = ActiveBrowser.Find.ByXPath<HtmlDiv>("//*[@id='ctl00_ContentPlaceHolder1_OrdersGrid']");
-            Assert.AreEqual("ctl00_ContentPlaceHolder1_OrdersGrid", Grid.ID);
+            // Populate user and password
+            Find.ById<HtmlInputText>("UsernameOrEmail").Text = "fakeUser";
+            Find.ById<HtmlInputPassword>("Password").Text = "fakePAssword";
 
-            // This HtmlFindExpression will math controls with ID ends with "_OrdersGrid" AND class attribute contains Grid
-            var FindExpression = new HtmlFindExpression("id=?_OrdersGrid", "class=~RadGrid");
+            // Click "Вход"
+            var exp = new HtmlFindExpression("tagname=input", "value=Вход");
+            Find.ByExpression<HtmlInputSubmit>(exp).Click();
 
-            // Locate Grid by HtmlFindExpression
-            Grid = ActiveBrowser.Find.ByExpression<HtmlDiv>(FindExpression);
-            Assert.AreEqual("ctl00_ContentPlaceHolder1_OrdersGrid", Grid.ID);
-
-            // Verify I see text "12 - 550 ml bottles" inside Grid control footer
-            Assert.IsTrue(Grid.InnerText.Contains("12 - 550 ml bottles"));
-
-            // Verify Grid has 10 rows and 6 columns
-            var Table = Grid.Find.ByExpression<HtmlTable>(new HtmlFindExpression("tagname=table"));
-            Assert.AreEqual(10, Table.Rows.Count);
-            Assert.AreEqual(6, Table.ColumnCount);
-
-            // Verify there are 8 pages with links in Grid footer
-            var TableFooterLinks = Table.FootRows[0]
-                .Find.ByAttributes<HtmlControl>("class=rgWrap rgNumPart")
-                .Find.AllByTagName("a");
-            Assert.AreEqual(8, TableFooterLinks.Count);
-
-            // Verify selected value in ComboBox is "All"            
-            var Combo = ActiveBrowser.Find.ByAttributes<RadComboBox>("class=RadComboBox RadComboBox_Silk");
-            Assert.AreEqual("All", Combo.Text);
-        }
-
-        [TestMethod]
-        public void AJAX_GridCombo_Sorting()
-        {
-            AJAX_GridCombo_NavigateTo();
-
-            // Locate the grid (using build in translators for Telerik controls)
-            var RadGrid = ActiveBrowser.Find.ById<RadGrid>("ctl00_ContentPlaceHolder1_OrdersGrid");
-
-            // Find "Unit Price" header
-            var UnitPriceColumnHeader = RadGrid.MasterTable.HeadRows[0].Find.ByContent<HtmlControl>("Unit Price", FindContentType.TextContent);
-            
-            // Click it to sort accending
-            UnitPriceColumnHeader.Click();
-
-            // Verify first result has Product Id = 33 and Unit Price = 2.50
-
-            // This assert will fail beceause it takes some time until Grid is sorted.
-            // Assert.AreEqual("33", RadGrid.MasterTable.Rows[0][0].InnerText);
-
-            // DO NOT use Thread.Sleep()
-            // Sometimes sorting might take > 2 sec and test will fail.
-            // Even if 2 sec are enough, test will aways wait 2 sec even if sorting takes 0.1 sec (this will make test very slow).
-            // Thread.Sleep(2000);
-
-            // This is better:
-            Wait.For<HtmlTableRow>(r => r[0].InnerText == "33" && r[3].InnerText == "2.50", RadGrid.MasterTable.Rows[0], 30000);
-        }
-
-        [TestMethod]
-        public void AJAX_GridCombo_Filtering()
-        {
-            AJAX_GridCombo_NavigateTo();
-
-            // Filter by "Shelley Burke"
-            var Combo = ActiveBrowser.Find.ByAttributes<RadComboBox>("class=RadComboBox RadComboBox_Silk");
-            Combo.SelectItemByText("Shelley Burke");
-
-            // Verify there are 4 results
-            var RadGrid = ActiveBrowser.Find.ById<RadGrid>("ctl00_ContentPlaceHolder1_OrdersGrid");
-            Wait.For<GridTableView>(t => t.Rows.Count == 4, RadGrid.MasterTable, 30000);
-        }
-
-        [TestMethod]
-        public void AJAX_GridCombo_Paging()
-        {
-            AJAX_GridCombo_NavigateTo();
-
-            // Locate the grid
-            var RadGrid = ActiveBrowser.Find.ById<RadGrid>("ctl00_ContentPlaceHolder1_OrdersGrid");
-
-            // Find button for next page
-            var NextButton = RadGrid.Find.ByAttributes<HtmlInputSubmit>("title=Next Page");
-            NextButton.Click();
-
-            // Verify I see "Jack's New England Clam Chowder" in first row
-            Wait.For<GridTableView>(t => t.Rows[0].InnerText.Contains("Queso Cabrales"), RadGrid.MasterTable, 30000);
+            // Verity error message
+            Assert.IsTrue(ActiveBrowser.ContainsText("Невалидни данни за достъп!"));
         }
     }
 }
