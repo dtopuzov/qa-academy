@@ -1,6 +1,5 @@
 ﻿using ArtOfTest.WebAii.Core;
 using System.Linq;
-using System.Threading;
 using TechTalk.SpecFlow;
 
 namespace ITeBooks
@@ -25,19 +24,6 @@ namespace ITeBooks
             if (ScenarioContext.Current.ScenarioInfo.Tags.Contains("WebTest"))
             {
                 MyManager.LaunchNewBrowser();
-            }
-        }
-
-        [BeforeStep]
-        public void BeforeStep()
-        {
-            if ((ScenarioContext.Current.ScenarioInfo.Tags.Contains("ApiTest"))
-                && (ScenarioContext.Current.CurrentScenarioBlock != ScenarioBlock.Then))
-            {
-                // Sleep between steps taht send requests to ITeBooks API.
-                // Otherwise we will hit the limits. 
-                // Please read this page: http://it-ebooks-api.info/
-                Thread.Sleep(5000);
             }
         }
 

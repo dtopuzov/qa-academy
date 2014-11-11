@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 
 namespace ITeBooks
 {
@@ -87,6 +88,11 @@ namespace ITeBooks
 
             using (var httpClient = new HttpClient())
             {
+                // Sleep for 1 second between ITeBooks API calls.
+                // Otherwise we will hit the limits. 
+                // Please read this page: http://it-ebooks-api.info/
+                Thread.Sleep(1000);
+
                 httpClient.Timeout = new TimeSpan(0, 10, 0);
                 return httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseContentRead).Result;
             }

@@ -18,6 +18,7 @@ namespace ITeBooks
         {
             get
             {
+                BAT.Browser.WaitForElement(new HtmlFindExpression("textcontent=Book Details"), 10000, false);
                 return BAT.Browser.Find.ByAttributes<HtmlDiv>(@"itemtype=http://schema.org/Book");
             }
         }
@@ -26,7 +27,14 @@ namespace ITeBooks
         {
             get
             {
-                return BookInfo.Find.ByExpression(new HtmlFindExpression("tagname=h1")).InnerText;
+                var titleExpr = new HtmlFindExpression("tagname=h1");
+                BAT.Manager
+                    .Wait
+                    .For<Element>(e => e.InnerText.Length > 1
+                    , BookInfo.Find.ByExpression(titleExpr)
+                    , 10000);
+
+                return BookInfo.Find.ByExpression(titleExpr).InnerText;
             }
         }
 

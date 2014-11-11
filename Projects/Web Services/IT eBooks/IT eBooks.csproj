@@ -78,6 +78,7 @@
     <Compile Include="Extensions\ScenarioExtensions.cs" />
     <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="Helpers\Screenshot.cs" />
+    <Compile Include="Helpers\Wait.cs" />
     <Compile Include="Hooks\Hooks.cs" />
     <Compile Include="IT eBooks\API\Objects.cs" />
     <Compile Include="IT eBooks\UI\DetailsPage.cs" />

@@ -23,7 +23,7 @@ namespace ITeBooks
         public void ThenResultContainsBook(string BookTitle)
         {
             var result = ResultsPage.GetResult(BookTitle);
-            Assert.IsNotNull(result, "{0} not found in results.", BookTitle);
+            Assert.IsNotNull(result, "{0} is not found", BookTitle);
         }
 
         [Given(@"results page with some results")]
@@ -62,6 +62,12 @@ namespace ITeBooks
 
             // Click the link
             link.Click();
+
+            // Wait until browser is ready
+            BAT.Browser.WaitUntilReady();
+
+            // Wait until browser contains '/book/' in the url
+            BAT.Browser.WaitForUrl("/book/", true, 10000);
         }
 
         [Then(@"I see book details page for the same book")]
@@ -71,6 +77,7 @@ namespace ITeBooks
 
             var actualBook = new Book();
             actualBook.ID = DetailsPage.Url.TrimEnd('/').Split('/').Last();
+
             actualBook.Title = DetailsPage.BookTitle;
 
             Assert.AreEqual(actualBook.ToString(), expectedBook.ToString(), "Navigation failed.");
@@ -82,7 +89,7 @@ namespace ITeBooks
             var expectedBook = ScenarioContext.Current["book"] as BookDetails;
             GivenIMOnITEBooksHomePage();
             WhenISeach(expectedBook.Title, "Title");
-            ResultsPage.ResultTable.Wait.ForVisible();
+
             var link = ResultsPage.GetResult(expectedBook.Title);
             link.Click();
             DetailsPage.BookInfo.Wait.ForVisible();

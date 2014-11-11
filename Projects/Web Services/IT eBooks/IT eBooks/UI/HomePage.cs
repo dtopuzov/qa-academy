@@ -42,6 +42,7 @@ namespace ITeBooks
             radioButton.Checked = true;
             SearchBox.Text = SearchString;
             SearchButton.Click();
+            BAT.Browser.WaitUntilReady();
         }
     }
 }
