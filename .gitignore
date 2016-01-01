@@ -229,3 +229,7 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+*.iml
+.idea/
+target/
