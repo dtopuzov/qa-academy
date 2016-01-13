@@ -16,6 +16,6 @@ List available emulators
 **Run Emulator**
 ```emulator -avd Emulator-Api21-Default -wipe-data -scale 0.5```
 
-**Adb***
+**Adb**
 
 [Adb tutorial](http://adbshell.com/commands/adb-install)
