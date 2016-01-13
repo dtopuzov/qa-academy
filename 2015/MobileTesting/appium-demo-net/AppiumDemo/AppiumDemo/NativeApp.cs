@@ -65,7 +65,6 @@ namespace AppiumDemo
         [TestInitialize]
         public void TestInit()
         {
-            driver.ResetApp();
         }
 
         [TestCleanup]

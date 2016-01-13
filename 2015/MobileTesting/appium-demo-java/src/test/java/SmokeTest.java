@@ -54,7 +54,7 @@ public class SmokeTest {
     }
 
     private static MobileElement score() {
-        return driver.findElement(By.id("com.codepath.example.rottentomatoes:id/tvAudienceScore"));
+        return driver.findElementById("com.codepath.example.rottentomatoes:id/tvAudienceScore");
     }
 
     private static void homeLoaded() {
@@ -119,7 +119,7 @@ public class SmokeTest {
 
     @AfterClass
     public static void afterClass() {
-        if (service != null)
-            service.stop();
+        driver.quit();
+        service.stop();
     }
 }
