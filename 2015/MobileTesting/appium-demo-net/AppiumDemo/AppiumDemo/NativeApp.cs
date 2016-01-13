@@ -104,7 +104,7 @@ namespace AppiumDemo
 
         private static void DetailsLoaded()
         {
-            Assert.IsNotNull(Score, "Home page not loaded.");
+            Assert.IsNotNull(Score, "Details page not loaded.");
         }
 
         enum Directions { Up, Down };

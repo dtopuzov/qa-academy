@@ -13,14 +13,14 @@ import java.io.File;
 import java.util.List;
 
 public class SmokeTest {
-    private AndroidDriver<MobileElement> driver;
+    private static AndroidDriver<MobileElement> driver;
     private static AppiumDriverLocalService service;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
         AppiumServiceBuilder serviceBuilder = new AppiumServiceBuilder()
                 .usingAnyFreePort()
-                .withArgument(AndroidServerFlag.AVD, "Emulator-Api19-Default")
+                .withArgument(AndroidServerFlag.AVD, "Emulator-Api21-Default")
                 .withArgument(AndroidServerFlag.AVD_ARGS, "-scale 0.5")
                 .withArgument(GeneralServerFlag.LOG_LEVEL, "warn");
         service = AppiumDriverLocalService.buildService(serviceBuilder);
@@ -45,20 +45,76 @@ public class SmokeTest {
         driver.quit();
     }
 
-    @Test
-    public void smokeTest() {
+    private static MobileElement listView() {
+        return driver.findElement(By.className("android.widget.ListView"));
+    }
 
-        // Tap first 3 list view items and navigate back
+    private static List<MobileElement> listViewItems() {
+        return driver.findElements(By.xpath("//android.widget.ListView/*"));
+    }
 
-        MobileElement listView = driver.findElement(By.className("android.widget.ListView"));
-        List<MobileElement> listViewItems = driver.findElements(By.xpath("//android.widget.ListView/android.widget.RelativeLayout"));
-        for (int i = 0; i < 3; i++) {
-            listViewItems.get(i).tap(1, 500);
-            MobileElement score = driver.findElement(By.id("com.codepath.example.rottentomatoes:id/tvAudienceScore"));
-            System.out.println("Score: " + score.getText());
-            driver.navigate().back();
-            listView = driver.findElement(By.className("android.widget.ListView"));
+    private static MobileElement score() {
+        return driver.findElement(By.id("com.codepath.example.rottentomatoes:id/tvAudienceScore"));
+    }
+
+    private static void homeLoaded() {
+        Assert.assertNotNull("Home page not loaded.", listView());
+    }
+
+    private static void detailsLoaded() {
+        Assert.assertNotNull("Details page not loaded.", score());
+    }
+
+    enum Directions {Up, Down}
+
+    ;
+
+    private static void swipe(Directions direction) {
+        int height = driver.manage().window().getSize().height;
+        int width = driver.manage().window().getSize().width;
+
+        int startX = width / 2;
+        int startY = height / 2;
+        int endX = width / 2;
+        int endY = height / 2;
+
+        if (direction == Directions.Down) {
+            startY = ((Double) (height * 0.75)).intValue();
+            endY = ((Double) (height * 0.25)).intValue();
+        } else if (direction == Directions.Up) {
+            startY = ((Double) (height * 0.25)).intValue();
+            endY = ((Double) (height * 0.75)).intValue();
         }
+
+        driver.swipe(startX, startY, endX, endY, 1000);
+    }
+
+    @Test
+    public void masterDetailNavigation() {
+        homeLoaded();
+        for (int i = 0; i < 3; i++) {
+            listViewItems().get(i).tap(1, 500);
+            detailsLoaded();
+            driver.navigate().back();
+            homeLoaded();
+        }
+    }
+
+    @Test
+    public void swipeUpAndDown() {
+        homeLoaded();
+        swipe(Directions.Down);
+        swipe(Directions.Up);
+        swipe(Directions.Down);
+    }
+
+    @Test
+    public void runAppInBackground() {
+        homeLoaded();
+        listViewItems().get(1).tap(1, 500);
+        detailsLoaded();
+        driver.runAppInBackground(10);
+        detailsLoaded();
     }
 
     @AfterClass
