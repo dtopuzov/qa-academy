@@ -37,7 +37,7 @@ namespace AppiumDemo
         public static void ClassInit(TestContext context)
         {
             // Start Appium Server
-            var avdOptions = new KeyValuePair<string, string>("--avd", "Emulator-Api19-Default");
+            var avdOptions = new KeyValuePair<string, string>("--avd", "Emulator-Api19-Arm");
             var avdParamsOptions = new KeyValuePair<string, string>("--avd-args", "\"-scale 0.50\"");
             OptionCollector args = new OptionCollector();
             args.AddArguments(avdOptions);
@@ -49,10 +49,10 @@ namespace AppiumDemo
 
             // Start Appium Client
             DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.SetCapability("deviceName", "Android Emulator");
+            capabilities.SetCapability("deviceName", "Emulator-Api19-Arm");
             capabilities.SetCapability("platformName", "Android");
             capabilities.SetCapability("app", "C:\\Git\\qa-academy\\2015\\MobileTesting\\testapp\\android-rottentomatoes-demo-debug.apk");
-            driver = new AndroidDriver<AndroidElement>(service.ServiceUrl, capabilities);
+            driver = new AndroidDriver<AndroidElement>(service.ServiceUrl, capabilities, TimeSpan.FromSeconds(180));
         }
 
         [ClassCleanup]
@@ -161,7 +161,7 @@ namespace AppiumDemo
             ListViewItems[1].Click();
             DetailsLoaded();
             driver.BackgroundApp(10);
-            DetailsLoaded();
+            DetailsLoaded();            
         }
     }
 }
