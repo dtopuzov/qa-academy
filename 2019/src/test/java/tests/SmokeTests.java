@@ -11,7 +11,7 @@ public class SmokeTests extends MobileTest {
     void loginInvalidUser() {
         HomePage home = new HomePage(driver);
         LoginDemo login = home.openLoginDemo();
-        login.login("Admin", "Admin");
+        login.login("Admin12345@gmail.com", "Admin12345");
         login.verifyAlert();
     }
 }

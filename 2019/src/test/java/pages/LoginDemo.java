@@ -10,15 +10,15 @@ import org.testng.Assert;
 
 public class LoginDemo extends MobilePage {
 
-    @AndroidFindBy(id = "username")
+    @AndroidFindBy(accessibility = "input-email")
     @iOSXCUITFindBy(id = "username")
     private MobileElement user;
 
-    @AndroidFindBy(id = "password")
+    @AndroidFindBy(accessibility = "input-password")
     @iOSXCUITFindBy(id = "password")
     private MobileElement pass;
 
-    @AndroidFindBy(id = "loginBtn")
+    @AndroidFindBy(accessibility = "button-LOGIN")
     @iOSXCUITFindBy(id = "loginBtn")
     private MobileElement login;
 
