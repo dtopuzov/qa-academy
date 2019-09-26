@@ -10,7 +10,7 @@ import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 public class HomePage extends MobilePage {
 
     @AndroidFindBy(accessibility = "Login")
-    @iOSXCUITFindBy(id = "Login Screen")
+    @iOSXCUITFindBy(accessibility = "Login")
     private MobileElement loginScreenButton;
 
     public HomePage(AppiumDriver driver) {

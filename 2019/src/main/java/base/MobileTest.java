@@ -21,12 +21,12 @@ import java.util.concurrent.TimeUnit;
 
 public class MobileTest {
     protected static AppiumDriver driver;
-    protected static AppiumDriverLocalService service;
+    private static AppiumDriverLocalService service;
 
     @BeforeClass
     public void beforeAll() {
         startServer();
-        startAndroid();
+        startIOS();
     }
 
     @BeforeMethod
@@ -50,7 +50,7 @@ public class MobileTest {
         AppiumServiceBuilder serviceBuilder = new AppiumServiceBuilder()
                 .usingAnyFreePort()
                 .withArgument(GeneralServerFlag.RELAXED_SECURITY)
-                .withArgument(GeneralServerFlag.LOG_LEVEL, "info");
+                .withArgument(GeneralServerFlag.LOG_LEVEL, "error");
 
         service = AppiumDriverLocalService.buildService(serviceBuilder);
         service.start();

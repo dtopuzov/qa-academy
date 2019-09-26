@@ -10,8 +10,8 @@ public class SmokeTests extends MobileTest {
     @Test
     void loginInvalidUser() {
         HomePage home = new HomePage(driver);
-        LoginDemo login = home.openLoginDemo();
-        login.login("Admin12345@gmail.com", "Admin12345");
-        login.verifyAlert();
+        LoginDemo loginDemo = home.openLoginDemo();
+        loginDemo.login("Admin12345@gmail.com", "Admin12345");
+        loginDemo.verifyAlertText("You are logged in!");
     }
 }
