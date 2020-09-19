@@ -64,7 +64,7 @@ public class MobileTest {
         caps.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 11");
         caps.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.IOS_XCUI_TEST);
         caps.setCapability(MobileCapabilityType.APP, getAppPath("iOS-Simulator-NativeDemoApp-0.2.1.app.zip"));
-        caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 60 * 5);
+        caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 120);
         URL url = service.getUrl();
 
         driver = new AppiumDriver<>(url, caps);
@@ -74,11 +74,11 @@ public class MobileTest {
     private static void startAndroid() {
         DesiredCapabilities caps = new DesiredCapabilities();
         caps.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.ANDROID.toString());
-        caps.setCapability(MobileCapabilityType.DEVICE_NAME, "Nexus5Api23");
-        caps.setCapability(AndroidMobileCapabilityType.AVD, "Nexus5Api23");
+        caps.setCapability(MobileCapabilityType.DEVICE_NAME, "Pixel3Api29");
+        caps.setCapability(AndroidMobileCapabilityType.AVD, "Pixel3Api29");
         caps.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.ANDROID_UIAUTOMATOR2);
         caps.setCapability(MobileCapabilityType.APP, getAppPath("Android-NativeDemoApp-0.2.1.apk"));
-        caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 60 * 5);
+        caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 120);
         caps.setCapability(MobileCapabilityType.ORIENTATION, ScreenOrientation.PORTRAIT);
         URL url = service.getUrl();
 

@@ -38,7 +38,8 @@ public class LoginDemo extends MobilePage {
 
     public void verifyAlertText(String text) {
         String message;
-        if (this.driver.getCapabilities().getCapability("platformName") == Platform.ANDROID) {
+        String platformString = this.driver.getCapabilities().getCapability("platformName").toString();
+        if (platformString.equals(Platform.ANDROID.toString())) {
             message = driver.findElement(By.id("android:id/message")).getText();
             driver.findElement(By.id("android:id/button1")).click();
         } else {
