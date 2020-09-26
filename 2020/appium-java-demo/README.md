@@ -14,6 +14,14 @@ Application under test:
 
 ## Execute Tests
 
+First of all please view config files located at `<ProjectRoot>\src\main\resources` and make sure you specify AVD image that is available on your machine.
+
+Please also look at the top of `MobileTest` class where config is hardcoded and update if needed.
+
+Notes:
+
+    Hardcoding configs is bad practice, please do not use it in real world projects.
+
 Run all tests in single class:
 ```
 gradlew.bat clean test --tests "tests.SmokeTests"

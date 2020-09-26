@@ -1,14 +1,11 @@
 package base;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.AutomationName;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.AfterClass;
@@ -17,17 +14,24 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import static jdk.xml.internal.SecuritySupport.getClassLoader;
+
 public class MobileTest {
-    protected static AppiumDriver driver;
+
+    private static final String CONFIG = "android.emulator.properties";
     private static AppiumDriverLocalService service;
+    protected static AppiumDriver driver;
 
     @BeforeClass
     public void beforeAll() {
         startServer();
-        startAndroid();
+        startClient();
     }
 
     @BeforeMethod
@@ -57,31 +61,31 @@ public class MobileTest {
         service.start();
     }
 
-    private static void startIOS() {
+    private static void startClient() {
+        InputStream inputStream = MobileTest.class.getClassLoader().getResourceAsStream(CONFIG);
+        Properties config = new Properties();
+        try {
+            config.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.IOS.toString());
-        caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, "14.0");
-        caps.setCapability(MobileCapabilityType.DEVICE_NAME, "iPhone 11");
-        caps.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.IOS_XCUI_TEST);
-        caps.setCapability(MobileCapabilityType.APP, getAppPath("iOS-Simulator-NativeDemoApp-0.2.1.app.zip"));
+        caps.setCapability(MobileCapabilityType.PLATFORM_NAME, config.getProperty("platform"));
+        caps.setCapability(MobileCapabilityType.DEVICE_NAME, config.getProperty("deviceName"));
+        caps.setCapability(MobileCapabilityType.APP, getAppPath(config.getProperty("testApp")));
         caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 120);
+        if (config.getProperty("platformVersion") != null) {
+            caps.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.getProperty("platformVersion"));
+        }
+        if (config.getProperty("avdName") != null) {
+            caps.setCapability(AndroidMobileCapabilityType.AVD, config.getProperty("avdName"));
+        }
+        if (config.getProperty("udid") != null) {
+            caps.setCapability(MobileCapabilityType.UDID, config.getProperty("udid"));
+        }
+
         URL url = service.getUrl();
-
-        driver = new AppiumDriver<>(url, caps);
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-    }
-
-    private static void startAndroid() {
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(MobileCapabilityType.PLATFORM_NAME, Platform.ANDROID.toString());
-        caps.setCapability(MobileCapabilityType.DEVICE_NAME, "Pixel3Api29");
-        caps.setCapability(AndroidMobileCapabilityType.AVD, "Pixel3Api29");
-        caps.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.ANDROID_UIAUTOMATOR2);
-        caps.setCapability(MobileCapabilityType.APP, getAppPath("Android-NativeDemoApp-0.2.1.apk"));
-        caps.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 120);
-        caps.setCapability(MobileCapabilityType.ORIENTATION, ScreenOrientation.PORTRAIT);
-        URL url = service.getUrl();
-
         driver = new AppiumDriver<>(url, caps);
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
