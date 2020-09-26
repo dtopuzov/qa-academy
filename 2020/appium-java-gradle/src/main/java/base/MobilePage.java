@@ -8,7 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 public class MobilePage {
     protected AppiumDriver<MobileElement> driver;
 
-    public MobilePage(AppiumDriver driver) {
+    public MobilePage(AppiumDriver<MobileElement> driver) {
         this.driver = driver;
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }

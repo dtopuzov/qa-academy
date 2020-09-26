@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MobileTest {
 
-    private static final String CONFIG = "android.emulator.properties";
+    private static final String CONFIG = "ios.simulator.properties";
     private static AppiumDriverLocalService service;
     protected static AppiumDriver<MobileElement> driver;
 

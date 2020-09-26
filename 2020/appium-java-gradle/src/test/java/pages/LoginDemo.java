@@ -25,7 +25,7 @@ public class LoginDemo extends MobilePage {
     @iOSXCUITFindBy(accessibility = "button-LOGIN")
     private MobileElement login;
 
-    LoginDemo(AppiumDriver driver) {
+    LoginDemo(AppiumDriver<MobileElement> driver) {
         super(driver);
     }
 
