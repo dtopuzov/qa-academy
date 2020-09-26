@@ -1,6 +1,7 @@
 package base;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
@@ -24,7 +25,7 @@ public class MobileTest {
 
     private static final String CONFIG = "android.emulator.properties";
     private static AppiumDriverLocalService service;
-    protected static AppiumDriver driver;
+    protected static AppiumDriver<MobileElement> driver;
 
     @BeforeClass
     public static void beforeAll() {
@@ -63,6 +64,7 @@ public class MobileTest {
         InputStream inputStream = MobileTest.class.getClassLoader().getResourceAsStream(CONFIG);
         Properties config = new Properties();
         try {
+            assert inputStream != null;
             config.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();

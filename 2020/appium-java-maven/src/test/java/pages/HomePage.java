@@ -13,7 +13,7 @@ public class HomePage extends MobilePage {
     @iOSXCUITFindBy(accessibility = "Login")
     private MobileElement loginScreenButton;
 
-    public HomePage(AppiumDriver driver) {
+    public HomePage(AppiumDriver<MobileElement> driver) {
         super(driver);
     }
 
