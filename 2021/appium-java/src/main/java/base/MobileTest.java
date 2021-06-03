@@ -44,7 +44,7 @@ public class MobileTest {
 
     @Before
     public void beforeTest() {
-        driver.rotate(ScreenOrientation.PORTRAIT);
+        driver.resetApp();
     }
 
     @After

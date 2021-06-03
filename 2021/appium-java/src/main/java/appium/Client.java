@@ -37,6 +37,7 @@ public class Client {
         } else {
             driver = new AppiumDriver<>(url, getCapabilities());
         }
+
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
